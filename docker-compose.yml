@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16
+    container_name: poopmap_db
+    environment:
+      POSTGRES_USER: poopmap
+      POSTGRES_PASSWORD: poopmap123
+      POSTGRES_DB: poopmap
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - poopmap_net
+
+  backend:
+    build: ./backend
+    container_name: poopmap_backend
+    environment:
+      DATABASE_URL: postgres://poopmap:poopmap123@db:5432/poopmap
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    networks:
+      - poopmap_net
+
+  frontend:
+    build: ./frontend
+    container_name: poopmap_frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    networks:
+      - poopmap_net
+
+volumes:
+  db_data:
+
+networks:
+  poopmap_net:
+    driver: bridge

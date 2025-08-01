@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS poops (
+    id SERIAL PRIMARY KEY,
+    lat FLOAT NOT NULL,
+    lng FLOAT NOT NULL,
+    message TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+);
